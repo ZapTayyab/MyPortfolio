@@ -728,6 +728,14 @@
       transform: none !important
     }
 
+    html.no-motion .sign-fill {
+      clip-path: none !important
+    }
+
+    html.no-motion .dial-arc {
+      stroke-dashoffset: 0 !important
+    }
+
     /* ============================================================
    MARQUEE — typographic divider between hero and about
 ============================================================ */
@@ -2131,11 +2139,11 @@
     }
 
     /* ============================================================
-   FOOTER / TOAST / CURSOR
+   FOOTER — utility row, meta bar, and the gold signature finale
 ============================================================ */
     .footer {
       border-top: 1px solid var(--hair-2);
-      padding: 64px 0 38px
+      padding-top: 56px
     }
 
     .foot-grid {
@@ -2170,43 +2178,108 @@
       color: var(--gold)
     }
 
-    .foot-bottom {
+    .foot-bar {
       margin-top: 46px;
-      padding-top: 26px;
-      border-top: 1px solid var(--hair-2);
+      border-top: 1px solid var(--hair-2)
+    }
+
+    .foot-bar-in {
       display: flex;
       flex-wrap: wrap;
-      gap: 14px 34px;
+      gap: 10px 34px;
       justify-content: space-between;
+      align-items: center;
+      padding-block: 18px;
       color: var(--ink-3);
-      font-size: .78rem
+      font-size: .78rem;
+      letter-spacing: .03em
     }
 
-    .foot-time {
+    .foot-bar-in span:last-child {
       display: inline-flex;
-      gap: 8px;
-      align-items: center
+      align-items: center;
+      gap: 8px
     }
 
-    .foot-time .dot {
+    .foot-bar-in .clock-dot {
       width: 5px;
       height: 5px;
       border-radius: 99px;
       background: var(--gold-2)
     }
 
-    .top-link {
-      display: inline-flex;
-      gap: 8px;
+    /* the finale: progress dial + giant wordmark that pours gold */
+    .sign {
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      color: var(--ink-3);
-      transition: color .3s
+      gap: clamp(22px, 4.5vh, 44px);
+      padding: clamp(36px, 7vh, 72px) var(--pad) clamp(28px, 6vh, 64px)
     }
 
-    .top-link:hover {
-      color: var(--gold)
+    .sign-dial {
+      width: clamp(52px, 8vw, 64px);
+      height: auto;
+      display: block
     }
 
+    .dial-track {
+      fill: none;
+      stroke: rgba(232, 228, 221, .12);
+      stroke-width: 1.5
+    }
+
+    .dial-arc {
+      fill: none;
+      stroke: var(--gold);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-dasharray: 100 100;
+      stroke-dashoffset: 100
+    }
+
+    .dial-dot {
+      fill: var(--gold)
+    }
+
+    .sign-word {
+      position: relative;
+      width: max-content;
+      font-family: var(--font-d);
+      font-size: clamp(3.4rem, 17.5vw, 16.5rem);
+      line-height: .95;
+      letter-spacing: .045em;
+      white-space: nowrap
+    }
+
+    .sign-word .lt {
+      font-weight: 300
+    }
+
+    .sign-word b {
+      font-weight: 600
+    }
+
+    .sign-word i {
+      font-style: normal
+    }
+
+    .sign-base {
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(232, 228, 221, .24)
+    }
+
+    .sign-fill {
+      position: absolute;
+      inset: 0;
+      color: var(--gold);
+      clip-path: inset(0 0 100% 0);
+      will-change: clip-path
+    }
+
+    /* ============================================================
+   TOAST / CURSOR
+============================================================ */
     #toast {
       position: fixed;
       left: 50%;
@@ -2400,10 +2473,15 @@
         flex-direction: column;
         align-items: flex-start
       }
+
+      .foot-bar-in {
+        justify-content: flex-start
+      }
     }
 
     /* ============================================================
    REDUCED MOTION — static, fully readable fallback
+   (the signature renders in its completed, full-gold state)
 ============================================================ */
     @media (prefers-reduced-motion:reduce) {
       html {
@@ -2447,6 +2525,14 @@
 
       .d-prog .bar i {
         transform: scaleX(1) !important
+      }
+
+      .sign-fill {
+        clip-path: none !important
+      }
+
+      .dial-arc {
+        stroke-dashoffset: 0 !important
       }
     }
   </style>
@@ -2965,15 +3051,35 @@
             aria-label="Facebook"><svg class="icon">
               <use href="#i-facebook" />
             </svg></a>
+          <a class="icon-btn" href="#home" aria-label="Back to top"><svg class="icon">
+              <use href="#i-arrow-up" />
+            </svg></a>
         </div>
       </div>
-      <div class="foot-bottom">
-        <span>© <span id="year">2025</span> Muhammad Tayyab</span>
-        <span>Pabbi, Nowshera — KPK, Pakistan</span>
-        <span class="foot-time"><i class="dot"></i>PKT <span id="foot-time">--:--</span></span>
-        <a class="top-link" href="#home">Back to top <svg class="icon">
-            <use href="#i-arrow-up" />
-          </svg></a>
+    </div>
+
+    <!-- meta bar, as in the reference -->
+    <div class="foot-bar">
+      <div class="wrap foot-bar-in">
+        <span>© <span id="year">2025</span> Muhammad Tayyab — all rights reserved.</span>
+        <span><i class="clock-dot"></i>Pabbi, Pakistan · <span id="foot-time">--:--</span> PKT local</span>
+      </div>
+    </div>
+
+    <!-- signature finale — the dial sweeps its gold dot around as you arrive,
+       and the giant wordmark pours gold top-to-bottom, completing exactly
+       when the page ends. Decorative (the © line carries the name for AT). -->
+    <div class="sign" id="sign" aria-hidden="true">
+      <svg class="sign-dial" viewBox="0 0 64 64">
+        <circle class="dial-track" cx="32" cy="32" r="27" />
+        <circle class="dial-arc" cx="32" cy="32" r="27" pathLength="100" transform="rotate(-90 32 32)" />
+        <g id="dial-dot-g">
+          <circle class="dial-dot" cx="32" cy="5" r="3.4" />
+        </g>
+      </svg>
+      <div class="sign-word">
+        <span class="sign-base"><span class="lt">TAY</span><b>YAB</b><i>.</i></span>
+        <span class="sign-fill" id="sign-fill"><span class="lt">TAY</span><b>YAB</b><i>.</i></span>
       </div>
     </div>
   </footer>
@@ -3007,6 +3113,14 @@
       .xp-fill {
         transform: scaleY(1) !important
       }
+
+      .sign-fill {
+        clip-path: none !important
+      }
+
+      .dial-arc {
+        stroke-dashoffset: 0 !important
+      }
     </style>
   </noscript>
 
@@ -3032,7 +3146,7 @@
       if (G && ST) G.registerPlugin(ST);
       if (G && Flip) G.registerPlugin(Flip);
       if (G) doc.documentElement.classList.add('gsap-on');
-      else doc.documentElement.classList.add('no-motion'); // GSAP failed → static, fully visible
+      else doc.documentElement.classList.add('no-motion');
 
       /* ============================================================
          DATA — all sections render from these arrays
@@ -3235,7 +3349,7 @@
       function renderMarquee() {
         const track = $('#marquee-track'); if (!track) return;
         const seq = MARQUEE_WORDS.map(w => `<span>${w}</span><i>·</i>`).join('');
-        track.innerHTML = G ? seq + seq : seq; // duplicate only when the loop can run
+        track.innerHTML = G ? seq + seq : seq;
       }
 
       renderWork(); renderCerts(); renderSkills(); renderRing(); renderXP(); renderMarquee();
@@ -3253,9 +3367,6 @@
 
       /* ============================================================
          THREE.JS #1 — golden ember field in the hero
-         Custom-shader points: soft sprites, additive blending, per-particle
-         drift/twinkle on the GPU. Because the portrait composites with
-         lighten, the embers are visible *through* the subject's shadow side.
       ============================================================ */
       function makeSprite() {
         const c = doc.createElement('canvas'); c.width = c.height = 64;
@@ -3275,7 +3386,7 @@
         const canvas = doc.createElement('canvas');
         canvas.id = 'ember-canvas';
         canvas.setAttribute('aria-hidden', 'true');
-        host.insertBefore(canvas, $('.hero-inner', host)); // above vignette, below content
+        host.insertBefore(canvas, $('.hero-inner', host));
         let renderer;
         try { renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false, powerPreference: 'high-performance' }); }
         catch (e) { canvas.remove(); return; }
@@ -3346,7 +3457,6 @@
         });
         scene.add(new THREE.Points(geo, mat));
 
-        /* camera parallax from the cursor */
         let tx = 0, ty = 0, camX = 0, camY = 0;
         if (FINE && !REDUCED) {
           host.addEventListener('pointermove', e => {
@@ -3367,7 +3477,7 @@
           if (!emberVisible) return true;
           const now = performance.now();
           const dt = Math.min(.05, (now - last) / 1000); last = now;
-          const sy = scrollY;                                   // embers accelerate with scroll
+          const sy = scrollY;
           boost += (Math.min(2.6, Math.abs(sy - lastSy) * .05) - boost) * .07; lastSy = sy;
           time += dt * (1 + boost);
           mat.uniforms.uTime.value = time;
@@ -3383,8 +3493,6 @@
 
       /* ============================================================
          THREE.JS #2 — live node network inside the phone mock
-         Gold points + nearest-neighbour links, slow auto-rotation that
-         leans into the card's tilt. CSS bars remain as fallback.
       ============================================================ */
       function initNetwork() {
         if (!window.THREE) return;
@@ -3404,7 +3512,7 @@
 
         const N = 32, nodes = [];
         for (let i = 0; i < N; i++) {
-          const inner = i > 25; // a few core nodes for depth
+          const inner = i > 25;
           const phi = Math.acos(1 - 2 * (i + .5) / 26);
           const th = Math.PI * (1 + Math.sqrt(5)) * i;
           const r = inner ? .3 + Math.random() * .35 : 1.05 + (Math.random() - .5) * .34;
@@ -3451,7 +3559,7 @@
         requestAnimationFrame(size);
         addEventListener('resize', size);
         new IntersectionObserver(es => { netVisible = es[0].isIntersecting; }).observe(wrapEl);
-        $('.device').classList.add('is-webgl'); // retire the CSS fallback
+        $('.device').classList.add('is-webgl');
 
         let autoY = 0, t = 0, last = performance.now();
         const ox = { x: 0, y: 0 };
@@ -3474,7 +3582,6 @@
 
       /* ============================================================
          INTRO — GSAP hero timeline (masked lines + char cascade)
-         No GSAP / reduced motion → the CSS is-loaded path takes over.
       ============================================================ */
       function intro() { body.classList.add('is-loaded'); }
 
@@ -3519,7 +3626,6 @@
         [.5, .62, .74, 1.05].forEach((at, i) => { if (fades[i]) tl.to(fades[i], { opacity: 1, y: 0, duration: .95 }, at); });
         tl.fromTo('.scroll-hint .vline', { scaleY: 0 }, { scaleY: 1, duration: 1.1, ease: 'power3.inOut' }, 1.1);
 
-        /* play once fonts settle (so masks measure right) — with a hard cap */
         let played = false;
         const play = () => { if (!played) { played = true; tl.play(); } };
         if (doc.fonts && doc.fonts.ready) { doc.fonts.ready.then(play); setTimeout(play, 700); }
@@ -3575,8 +3681,7 @@
       addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
 
       /* ============================================================
-         REVEALS — IO + CSS, row/column-aware stagger (GSAP never
-         animates .rv elements, so the two systems never fight)
+         REVEALS — IO + CSS, row/column-aware stagger
       ============================================================ */
       function stagger(group) {
         const items = $$('.st', group).filter(el => !el.classList.contains('is-hidden-item'));
@@ -3607,9 +3712,7 @@
       $$('.rv').filter(el => !el.closest('[data-group]')).forEach(el => sio.observe(el));
 
       /* ============================================================
-         HERO PARALLAX — GSAP quickTo (or manual lerp fallback).
-         Always on the image itself, never the .hero-media container,
-         so the lighten blend keeps compositing with the page.
+         HERO PARALLAX — GSAP quickTo (or manual lerp fallback)
       ============================================================ */
       const heroImg = $('#hero-img'), heroBg = $('.hero-bg');
       if (FINE && !REDUCED && heroImg) {
@@ -3693,9 +3796,7 @@
       }
 
       /* ============================================================
-         CARD TILT — GSAP rotations + elastic settle (or manual lerp),
-         inner data-depth layers counter-drift, and the phone mock
-         feeds its pointer position to the Three.js network.
+         CARD TILT — GSAP rotations + elastic settle (or manual lerp)
       ============================================================ */
       const tiltEls = $$('[data-tilt]');
       if (FINE && !REDUCED && tiltEls.length) {
@@ -3791,7 +3892,7 @@
       });
 
       /* ============================================================
-         PROJECT FILTERS — Flip-powered re-layout (GSAP), CSS fallback
+         PROJECT FILTERS — Flip-powered re-layout, CSS fallback
       ============================================================ */
       const grid = $('#work-grid');
       const fbtns = $$('.fbtn');
@@ -3814,12 +3915,11 @@
           });
           return;
         }
-        if (REDUCED || !Flip) {
-          if (REDUCED || !G) {
-            cells.forEach(c => c.classList.toggle('is-hidden-item', !show(c)));
-            return;
-          }
+        if (REDUCED || !G) {
+          cells.forEach(c => c.classList.toggle('is-hidden-item', !show(c)));
+          return;
         }
+        /* GSAP present but no Flip: CSS-driven exit + row-aware re-cascade */
         grid.classList.add('is-filtering');
         clearTimeout(filterT);
         filterT = setTimeout(() => {
@@ -3842,23 +3942,39 @@
         const p = clamp((innerHeight * .7 - r.top) / r.height, 0, 1);
         xpFill.style.transform = `scaleY(${p.toFixed(3)})`;
       }
+
+      /* ============================================================
+         SIGNATURE FINALE — dial + gold pour, scrubbed to the page end
+      ============================================================ */
+      const signEl = $('#sign'), signFill = $('#sign-fill'),
+        dialArc = $('.dial-arc'), dialDotG = $('#dial-dot-g');
+      function signTick() {
+        if (!signEl) return;
+        const r = signEl.getBoundingClientRect(), vh = innerHeight;
+        const span = r.height - vh * .08;
+        const p = span <= 0 ? 1 : clamp((vh * .92 - r.top) / span, 0, 1);
+        if (signFill) signFill.style.clipPath = `inset(0 0 ${((1 - p) * 100).toFixed(2)}% 0)`;
+        if (dialArc) dialArc.style.strokeDashoffset = (100 - p * 100).toFixed(2);
+        if (dialDotG) dialDotG.setAttribute('transform', `rotate(${(p * 360).toFixed(2)} 32 32)`);
+      }
+
+      /* nav bar state + manual-progress fallbacks, throttled through rAF */
       addEventListener('scroll', () => {
         if (navTicking) return;
         navTicking = true;
         requestAnimationFrame(() => {
           nav.classList.toggle('is-scrolled', scrollY > 24);
-          if (!G) xpTick();
+          if (!G) { xpTick(); signTick(); }
           navTicking = false;
         });
       }, { passive: true });
       nav.classList.toggle('is-scrolled', scrollY > 24);
-      if (!G) xpTick();
+      if (!G) { xpTick(); signTick(); }
 
       /* ============================================================
-         SCROLLTRIGGER CHOREOGRAPHY — scrubs GSAP handles natively
+         SCROLLTRIGGER CHOREOGRAPHY
       ============================================================ */
       if (ST && !REDUCED) {
-        /* hero exit: copy drifts up, portrait recedes into the dark */
         G.to('.hero-copy', {
           yPercent: -16, ease: 'none',
           scrollTrigger: { trigger: '#home', start: 'top top', end: 'bottom top', scrub: .5 }
@@ -3872,31 +3988,38 @@
           scrollTrigger: { trigger: '#home', start: '15% top', end: 'bottom top', scrub: true }
         });
 
-        /* experience rail fills with scroll */
         G.fromTo('#xp-fill', { scaleY: 0 }, {
           scaleY: 1, ease: 'none',
           scrollTrigger: { trigger: '#xp-entries', start: 'top 78%', end: 'bottom 45%', scrub: .4 }
         });
 
-        /* the "My Time" ring slowly rotates through its section */
         G.to('.wt-ring svg', {
           rotation: 36, transformOrigin: '50% 50%', ease: 'none',
           scrollTrigger: { trigger: '#wt', start: 'top 85%', end: 'bottom 25%', scrub: .8 }
         });
 
-        /* section heads parallax slightly against their content */
         $$('.sec-head').forEach(h => G.fromTo(h, { yPercent: 8 }, {
           yPercent: -8, ease: 'none',
           scrollTrigger: { trigger: h, start: 'top 92%', end: 'bottom 30%', scrub: .6 }
         }));
 
-        /* device mock drifts within the featured panel */
         G.fromTo('.device-frame', { y: 26 }, {
           y: -26, ease: 'none',
           scrollTrigger: { trigger: '.feature-panel', start: 'top 95%', end: 'bottom 25%', scrub: .7 }
         });
 
-        /* About statement brightens word by word as it crosses the fold */
+        /* the finale: one timeline, scrubbed from the signature entering view
+           to the very bottom of the page — gold pours down through the letters
+           while the dial's dot sweeps its full circle in sync. */
+        const fin = G.timeline({
+          defaults: { ease: 'none' },
+          scrollTrigger: { trigger: '#sign', start: 'top 92%', end: 'bottom bottom', scrub: .5 }
+        });
+        fin.fromTo('#sign-fill', { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)' }, 0)
+          .fromTo('.dial-arc', { strokeDashoffset: 100 }, { strokeDashoffset: 0 }, 0)
+          .fromTo('#dial-dot-g', { rotation: 0, svgOrigin: '32 32' }, { rotation: 360, svgOrigin: '32 32' }, 0);
+
+        /* About statement brightens word by word */
         const lead = $('.about-lead');
         if (lead) {
           const words = [];
@@ -3952,7 +4075,6 @@
           m.x = e.clientX; m.y = e.clientY;
           if (!shown) { shown = true; dot.style.opacity = 1; ring.style.opacity = 1; }
           dot.style.transform = `translate3d(${m.x}px,${m.y}px,0) translate(-50%,-50%)`;
-          if (!G) return;
         }, { passive: true });
         if (G) {
           G.set(ring, { xPercent: -50, yPercent: -50 });
